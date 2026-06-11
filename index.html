@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademia Manipulacji</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f3;
+    --bg3: #eeecea;
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #9a9a94;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --border3: rgba(0,0,0,0.35);
+    --success-bg: #eaf3de;
+    --success-text: #3b6d11;
+    --success-border: rgba(59,109,17,0.3);
+    --danger-bg: #fcebeb;
+    --danger-text: #a32d2d;
+    --danger-border: rgba(163,45,45,0.3);
+    --warn-bg: #faeeda;
+    --warn-text: #854f0b;
+    --info-bg: #e6f1fb;
+    --info-text: #185fa5;
+    --info-border: rgba(24,95,165,0.4);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --sans: system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg2: #242422;
+      --bg3: #2c2c2a;
+      --text: #f0ede8;
+      --text2: #a8a8a0;
+      --text3: #686860;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.18);
+      --border3: rgba(255,255,255,0.28);
+      --success-bg: #173404;
+      --success-text: #c0dd97;
+      --success-border: rgba(192,221,151,0.3);
+      --danger-bg: #501313;
+      --danger-text: #f09595;
+      --danger-border: rgba(240,149,149,0.3);
+      --warn-bg: #412402;
+      --warn-text: #fac775;
+      --info-bg: #042c53;
+      --info-text: #85b7eb;
+      --info-border: rgba(133,183,235,0.4);
+    }
+  }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.7; min-height: 100vh; }
+  .container { max-width: 740px; margin: 0 auto; padding: 0 1.25rem 4rem; }
+
+  /* HEADER */
+  .site-header { padding: 2.5rem 0 1.5rem; border-bottom: 0.5px solid var(--border); margin-bottom: 2rem; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+  .site-title { font-size: 28px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .site-sub { font-size: 14px; color: var(--text2); }
+  .progress-wrap { margin-top: 1.25rem; }
+  .progress-label { font-size: 12px; color: var(--text3); margin-bottom: 5px; }
+  .progress-bar { height: 3px; background: var(--border); border-radius: 2px; }
+  .progress-fill { height: 3px; background: var(--text2); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
+
+  /* NAV */
+  .nav-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 2rem; }
+  .tab { font-size: 13px; padding: 6px 14px; border: 0.5px solid var(--border); border-radius: 20px; cursor: pointer; color: var(--text2); background: transparent; transition: all 0.15s; font-family: var(--sans); }
+  .tab:hover { background: var(--bg2); }
+  .tab.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .tab.done::after { content: " ✓"; font-size: 11px; opacity: 0.7; }
+
+  /* MODULE */
+  .module { display: none; }
+  .module.visible { display: block; }
+  .mod-eyebrow { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+  .mod-title { font-size: 22px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+  .mod-desc { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 2rem; }
+
+  /* SECTIONS */
+  .section { margin-bottom: 2rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; border-bottom: 0.5px solid var(--border); padding-bottom: 7px; }
+
+  /* CARDS */
+  .technique-card { border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+  .technique-card:hover { background: var(--bg2); border-color: var(--border2); }
+  .technique-card.expanded { border-color: var(--border3); }
+  .tc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .tc-name { font-size: 15px; font-weight: 500; color: var(--text); flex: 1; }
+  .tc-tag { font-size: 11px; padding: 2px 9px; border-radius: 10px; white-space: nowrap; flex-shrink: 0; margin-top: 3px; }
+  .tag-danger { background: var(--danger-bg); color: var(--danger-text); }
+  .tag-warn { background: var(--warn-bg); color: var(--warn-text); }
+  .tag-info { background: var(--info-bg); color: var(--info-text); }
+  .tc-hook { font-size: 13px; color: var(--text2); margin-top: 5px; line-height: 1.55; }
+  .tc-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 0.5px solid var(--border); }
+  .tc-body.visible { display: block; }
+  .tc-body p { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 10px; }
+  .tc-body p:last-child { margin-bottom: 0; }
+  .example-box { background: var(--bg2); border-radius: var(--radius); padding: 10px 14px; margin-top: 10px; font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .example-box strong { color: var(--text); font-weight: 500; }
+  .defense-box { border-left: 2px solid var(--info-border); padding-left: 12px; margin-top: 10px; font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .def-label { font-size: 11px; color: var(--info-text); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 3px; font-weight: 500; }
+
+  /* INTRO GRIDS */
+  .intro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.75rem; }
+  .intro-card { border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; }
+  .intro-num { font-size: 24px; font-weight: 500; color: var(--text); }
+  .intro-label { font-size: 12px; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+  .brain-model { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+  .brain-card { border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 0.85rem 1rem; }
+  .brain-label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
+  .brain-label.sys1 { color: var(--warn-text); }
+  .brain-label.sys2 { color: var(--info-text); }
+  .brain-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .bias-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+  .bias-item { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 0.75rem; }
+  .bias-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .bias-exp { font-size: 12px; color: var(--text2); line-height: 1.45; }
+
+  /* CALLOUT */
+  .callout { background: var(--bg2); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.75rem; }
+  .callout-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 5px; }
+  .callout-text { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+  /* QUIZ */
+  .quiz-section { margin-top: 2rem; }
+  .quiz-card { border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .quiz-q { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 1rem; line-height: 1.5; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 14px; cursor: pointer; font-size: 14px; color: var(--text); text-align: left; background: transparent; transition: all 0.15s; line-height: 1.45; font-family: var(--sans); }
+  .quiz-opt:hover:not(:disabled) { background: var(--bg2); border-color: var(--border2); }
+  .quiz-opt.correct { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+  .quiz-opt.wrong { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+  .quiz-feedback { margin-top: 12px; font-size: 13px; line-height: 1.6; color: var(--text2); padding: 10px 14px; background: var(--bg2); border-radius: var(--radius); display: none; }
+  .quiz-feedback.visible { display: block; }
+  .next-btn { margin-top: 1rem; font-size: 13px; padding: 8px 18px; border: 0.5px solid var(--border2); border-radius: 20px; cursor: pointer; background: transparent; color: var(--text); font-family: var(--sans); }
+  .next-btn:hover { background: var(--bg2); }
+
+  /* MODULE COMPLETE */
+  .module-complete { text-align: center; padding: 2.5rem 1rem; display: none; border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-top: 1.5rem; }
+  .module-complete.visible { display: block; }
+  .mc-icon { font-size: 36px; color: var(--text3); margin-bottom: 14px; }
+  .score-badge { display: inline-block; font-size: 13px; padding: 4px 14px; border-radius: 10px; background: var(--success-bg); color: var(--success-text); margin-bottom: 14px; }
+  .mc-title { font-size: 19px; font-weight: 500; color: var(--text); margin-bottom: 7px; }
+  .mc-desc { font-size: 14px; color: var(--text2); margin-bottom: 1.25rem; line-height: 1.6; }
+  .next-module-btn { font-size: 14px; padding: 10px 26px; border: 0.5px solid var(--border3); border-radius: 20px; cursor: pointer; background: transparent; color: var(--text); font-family: var(--sans); }
+  .next-module-btn:hover { background: var(--bg2); }
+
+  @media (max-width: 520px) {
+    .brain-model { grid-template-columns: 1fr; }
+    .site-title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="site-header">
+    <div class="eyebrow">Szkolenie operacyjne</div>
+    <h1 class="site-title">Akademia Manipulacji</h1>
+    <p class="site-sub">7 modułów · 50+ technik · quizy po każdym module</p>
+    <div class="progress-wrap">
+      <div class="progress-label" id="progress-label">Postęp: 0 / 7 modułów</div>
+      <div class="progress-bar"><div class="progress-fill" id="main-progress"></div></div>
+    </div>
+  </header>
+
+  <nav class="nav-tabs" id="nav-tabs" aria-label="Moduły szkolenia">
+    <button class="tab active" onclick="showModule(0)">0. Fundament</button>
+    <button class="tab" onclick="showModule(1)">1. Marketing</button>
+    <button class="tab" onclick="showModule(2)">2. Social media</button>
+    <button class="tab" onclick="showModule(3)">3. Polityka</button>
+    <button class="tab" onclick="showModule(4)">4. Relacje</button>
+    <button class="tab" onclick="showModule(5)">5. Praca</button>
+    <button class="tab" onclick="showModule(6)">6. Zaawansowane</button>
+  </nav>
+
+  <!-- MODULE 0 -->
+  <section class="module visible" id="mod-0" aria-label="Moduł 0: Fundament">
+    <div class="mod-eyebrow">Moduł 0</div>
+    <h2 class="mod-title">Jak działa mózg, który da się zmanipulować</h2>
+    <p class="mod-desc">Zanim przejdziemy do technik, musisz zrozumieć mechanizm, który je wszystkie łączy: mózg nie analizuje rzeczywistości — on ją skraca. To właśnie to skracanie jest celem każdej manipulacji.</p>
+
+    <div class="intro-grid">
+      <div class="intro-card"><div class="intro-num">200 ms</div><div class="intro-label">Tyle czasu zajmuje pierwsza ocena zanim włączy się logika</div></div>
+      <div class="intro-card"><div class="intro-num">95%</div><div class="intro-label">Decyzji podejmowanych nieświadomie wg badań neuromarketingu</div></div>
+      <div class="intro-card"><div class="intro-num">~180</div><div class="intro-label">Znanych błędów poznawczych, na których grają manipulatorzy</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Dwa systemy myślenia (Kahneman)</div>
+      <div class="brain-model">
+        <div class="brain-card"><div class="brain-label sys1">System 1 — szybki</div><div class="brain-desc">Automatyczny, emocjonalny, bez wysiłku. Odpowiada na bodźce zanim się to „zorientujesz". Tutaj działa 95% manipulacji.</div></div>
+        <div class="brain-card"><div class="brain-label sys2">System 2 — wolny</div><div class="brain-desc">Analityczny, świadomy, kosztuje energię. Manipulatorzy albo go omijają, albo przeciążają — żeby nie miał szansy zadziałać.</div></div>
+      </div>
+      <div class="example-box"><strong>Zasada operacyjna:</strong> każda technika manipulacji to próba wyłączenia Systemu 2 lub podania Systemowi 1 fałszywego skrótu.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Kluczowe błędy poznawcze</div>
+      <div class="bias-grid">
+        <div class="bias-item"><div class="bias-name">Efekt zakotwiczenia</div><div class="bias-exp">Pierwsza liczba/informacja staje się punktem odniesienia dla wszystkich kolejnych ocen.</div></div>
+        <div class="bias-item"><div class="bias-name">Heurystyka dostępności</div><div class="bias-exp">To, co łatwo przychodzi do głowy, wydaje się bardziej prawdopodobne lub ważne.</div></div>
+        <div class="bias-item"><div class="bias-name">Efekt aureoli</div><div class="bias-exp">Jedna pozytywna cecha przenosi się na całą ocenę osoby lub produktu.</div></div>
+        <div class="bias-item"><div class="bias-name">Potwierdzenie hipotezy</div><div class="bias-exp">Szukamy informacji, które potwierdzają to, w co już wierzymy.</div></div>
+        <div class="bias-item"><div class="bias-name">Awersja do straty</div><div class="bias-exp">Strata boli 2× mocniej niż cieszy zysk tej samej wartości.</div></div>
+        <div class="bias-item"><div class="bias-name">Efekt stadny</div><div class="bias-exp">Jeśli inni coś robią, zakładamy że to słuszne — szczególnie w niepewności.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Natura ludzka, którą eksploatuje manipulacja</div>
+      <div class="technique-card" onclick="toggleCard(this)">
+        <div class="tc-header"><span class="tc-name">Potrzeba przynależności</span><span class="tc-tag tag-danger">bardzo eksploatowana</span></div>
+        <div class="tc-hook">Człowiek jest zwierzęciem społecznym. Wykluczenie z grupy historycznie = śmierć.</div>
+        <div class="tc-body"><p>Ewolucyjnie bycie odrzuconym przez grupę oznaczało śmierć. Dlatego mózg traktuje wykluczenie społeczne z taką samą powagą jak ból fizyczny. Manipulatorzy używają groźby wykluczenia lub obietnicy przynależności jako narzędzia kontroli.</p><div class="example-box"><strong>Gdzie to widzisz:</strong> sekty oferujące „rodzinę", marki budujące „plemiona" (Apple, Harley), social media pokazujące że „wszyscy to mają".</div></div>
+      </div>
+      <div class="technique-card" onclick="toggleCard(this)">
+        <div class="tc-header"><span class="tc-name">Potrzeba konsekwencji (tożsamość)</span><span class="tc-tag tag-warn">średnio eksploatowana</span></div>
+        <div class="tc-hook">Ludzie desperacko chcą być spójni z tym, co już powiedzieli lub zrobili.</div>
+        <div class="tc-body"><p>Niespójność z własną tożsamością wywołuje dysonans poznawczy — nieprzyjemne napięcie, którego mózg chce się pozbyć. Manipulatorzy nakłaniają do małego kroku, po którym duży krok staje się „logicznym" następstwem.</p><div class="example-box"><strong>Klasyczny przykład:</strong> technika „stopa w drzwiach" — najpierw małe „tak", potem coraz większe prośby.</div></div>
+      </div>
+      <div class="technique-card" onclick="toggleCard(this)">
+        <div class="tc-header"><span class="tc-name">Potrzeba pewności/przewidywalności</span><span class="tc-tag tag-danger">bardzo eksploatowana</span></div>
+        <div class="tc-hook">Niepewność to ból. Mózg szuka każdego, kto da prostą odpowiedź.</div>
+        <div class="tc-body"><p>W sytuacjach niepewności mózg drastycznie obniża standardy oceny źródeł — byle mieć odpowiedź. Dlatego kryzysy to „złoty czas" dla manipulatorów politycznych i sprzedawców cudownych rozwiązań.</p><div class="example-box"><strong>Mechanizm:</strong> najpierw wywołaj lub podkreśl niepewność → potem zaoferuj siebie jako jedyne pewne rozwiązanie.</div></div>
+      </div>
+      <div class="technique-card" onclick="toggleCard(this)">
+        <div class="tc-header"><span class="tc-name">Potrzeba sensu i sprawczości</span><span class="tc-tag tag-info">selektywnie eksploatowana</span></div>
+        <div class="tc-hook">Nie chcemy być ofiarami losu — szukamy wzorców i sprawstwa nawet tam, gdzie ich nie ma.</div>
+        <div class="tc-body"><p>Mózg nie znosi przypadkowości. Dlatego widzimy twarze w chmurach, szukamy winnych za każdą tragedię. Manipulatorzy oferują narracje z wyraźnym wrogiem i jasną receptą.</p><div class="example-box"><strong>W praktyce:</strong> teorie spiskowe, nacjonalizm, marki „lifestylowe" które sprzedają tożsamość.</div></div>
+      </div>
+    </div>
+
+    <div class="quiz-section"><div class="section-label">Quiz — sprawdź fundament</div><div class="quiz-card"><div id="q0-text" class="quiz-q"></div><div class="quiz-opts" id="q0-opts"></div><div class="quiz-feedback" id="q0-fb"></div><button class="next-btn" id="q0-next" style="display:none" onclick="nextQ(0)">Następne pytanie →</button></div></div>
+    <div class="module-complete" id="mc-0"><div class="mc-icon"><i class="ti ti-check"></i></div><div id="mc0-score" class="score-badge"></div><div class="mc-title">Fundament opanowany</div><div class="mc-desc">Znasz już mechanizm, który łączy wszystkie techniki.</div><button class="next-module-btn" onclick="showModule(1)">Przejdź do modułu 1: Marketing →</button></div>
+  </section>
+
+  <!-- MODULE 1 -->
+  <section class="module" id="mod-1" aria-label="Moduł 1: Marketing">
+    <div class="mod-eyebrow">Moduł 1</div>
+    <h2 class="mod-title">Marketing, reklama i sprzedaż</h2>
+    <p class="mod-desc">Firmy wydają miliardy na badanie jak skłonić cię do zakupu. Większość tych technik działa zanim zdasz sobie sprawę, że reklama w ogóle istnieje.</p>
+    <div class="section">
+      <div class="section-label">Techniki cenowe i decyzyjne</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Zakotwiczenie ceny (Price Anchoring)</span><span class="tc-tag tag-danger">wszechobecna</span></div><div class="tc-hook">Pierwsza cena którą widzisz staje się „normą" — wszystko oceniasz względem niej.</div><div class="tc-body"><p>Sklep pokazuje cenę przekreśloną 499 zł, a obok aktualną 299 zł. Twój mózg nie ocenia czy 299 zł to dobra cena — ocenia czy rabat jest duży. Te 200 zł „oszczędności" staje się prawdziwym produktem.</p><div class="example-box"><strong>Wariant premium decoy:</strong> celowo drogi trzeci wariant sprawia, że środkowy wydaje się „rozsądny". Amazon, Netflix, software — wszędzie.</div><div class="defense-box"><div class="def-label">Ochrona</div>Przed zakupem zapytaj: czy ta cena byłaby dobra gdybym nigdy nie widziała ceny wyższej?</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Sztuczna pilność i niedobór</span><span class="tc-tag tag-danger">wszechobecna</span></div><div class="tc-hook">„Zostały 3 sztuki" · „Oferta ważna 24h" · „Tylko dla pierwszych 100 osób"</div><div class="tc-body"><p>Niedobór aktywuje ciało migdałowate (reakcja zagrożenia) i wyłącza korę przedczołową (logiczne myślenie). Podejmujesz decyzję w trybie alarmowym, nie analitycznym.</p><div class="example-box"><strong>Booking.com:</strong> „15 osób ogląda teraz ten hotel", „Zostały 2 pokoje". Badania wykazały, że znaczna część tych komunikatów jest statystycznie zawyżona lub generowana automatycznie.</div><div class="defense-box"><div class="def-label">Ochrona</div>Gdy czujesz nacisk czasowy — to sygnał ostrzegawczy. Zrób 10-minutową przerwę.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Efekt czarowania (Charm Pricing)</span><span class="tc-tag tag-info">podprogowa</span></div><div class="tc-hook">99 zł czytane jest jako „coś w okolicach 90" nie jako „prawie 100".</div><div class="tc-body"><p>Mózg przetwarza liczby od lewej — pierwsza cyfra koduje kategorię cenową. Badania MIT/Chicago: ceny kończące się na 9 sprzedają się średnio 24% lepiej niż okrągłe.</p><div class="example-box"><strong>Odwrotność:</strong> prestiżowe marki używają okrągłych cen (1200 zł, nie 1199) — sygnalizuje to pewność siebie i brak potrzeby „triku".</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Darmowy próg i efekt zero-ceny</span><span class="tc-tag tag-warn">często ukryta</span></div><div class="tc-hook">Słowo „darmowy" aktywuje mózg silniej niż jakakolwiek inna oferta.</div><div class="tc-body"><p>Dan Ariely: gdy zaoferowano czekoladkę Lindt za 15 centów vs Hershey za 1 cent, wybór był równy. Gdy obniżono o 1 cent (Lindt 14c, Hershey gratis) — 69% wybrało gorszy produkt tylko dlatego że był darmowy.</p><div class="example-box"><strong>Freemium:</strong> Spotify, Duolingo, LinkedIn Premium — model oparty na tym efekcie.</div><div class="defense-box"><div class="def-label">Ochrona</div>Policz pełny koszt: czas, dane osobowe, zależność. „Free" nigdy nie jest naprawdę free.</div></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">Techniki budowania zaufania</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Dowód społeczny (Social Proof)</span><span class="tc-tag tag-danger">fundament marketingu</span></div><div class="tc-hook">„4,8/5 z 12 847 opinii" · „Wybór 2 milionów klientów"</div><div class="tc-body"><p>Mechanizm ewolucyjny: w sytuacji niepewności kopiujemy zachowanie grupy. Manipulatorzy wiedzą: im liczba wygląda na bardziej konkretną, tym mocniej działa — nawet jeśli nie da się jej zweryfikować.</p><div class="example-box"><strong>Dark pattern:</strong> kupowanie recenzji, seed reviews, filtrowanie negatywnych komentarzy. Amazon, TripAdvisor — systemy z udokumentowanymi nadużyciami.</div><div class="defense-box"><div class="def-label">Ochrona</div>Szukaj recenzji poza platformą sprzedającą. Nawał recenzji w 2 dni = kupione.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Autorytet i sygnały statusu</span><span class="tc-tag tag-warn">podprogowa</span></div><div class="tc-hook">Biały kitel, tytuł naukowy, nagrody — mózg słucha zanim sprawdzi.</div><div class="tc-body"><p>Badanie Milgrama: autorytet ubrany w mundur/kitel powodował wykonywanie poleceń których normalnie by nie wykonano. Marketing używa dokładnie tego mechanizmu.</p><div class="example-box"><strong>Praktycznie:</strong> „9 na 10 dentystów poleca" (które 9? badanie z 1970?), certyfikaty ISO na opakowaniach, influencer w garniturze jako „ekspert finansowy".</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Reguła wzajemności (Reciprocity)</span><span class="tc-tag tag-danger">bardzo eksploatowana</span></div><div class="tc-hook">Daj coś za darmo — a mózg rozmówcy poczuje się dłużnikiem.</div><div class="tc-body"><p>Cialdini: kelnerzy którzy zostawiali miętówkę z rachunkiem dostawali średnio 14% więcej napiwku. Z dwoma miętówkami — 23%. Dług społeczny boli, ludzie chcą go spłacić — często przepłacając.</p><div class="example-box"><strong>Marketing:</strong> bezpłatne próbki, darmowe e-booki (w zamian za email), „prezent powitalny" przy zakupie subskrypcji.</div><div class="defense-box"><div class="def-label">Ochrona</div>Przyjmowanie prezentu nie tworzy zobowiązania. Powiedz sobie wprost: to narzędzie sprzedaży.</div></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">Neuromarketing — głęboka warstwa</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Priming emocjonalny</span><span class="tc-tag tag-warn">podprogowa</span></div><div class="tc-hook">Muzyka, kolory i zapachy wpływają na decyzje zanim zaczniesz myśleć.</div><div class="tc-body"><p>Badanie: sklep grał albo muzykę francuską albo niemiecką. W dni z muzyką francuską — sprzedaż wina francuskiego rosła 3×. Kolor czerwony przyspiesza tętno, niebieski uspokaja, zapach piekarni w supermarkecie to świadomy zabieg.</p><div class="example-box"><strong>Cyfrowo:</strong> kolory przycisków CTA, kolejność elementów na stronie, wielkość czcionki przy cenie vs przy warunkach. UX i neuromarketing to dziś jedno.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Efekt posiadania (Endowment Effect)</span><span class="tc-tag tag-info">ukryta</span></div><div class="tc-hook">Im dłużej „masz" coś w rękach, tym wyżej to wyceniasz.</div><div class="tc-body"><p>Badanie: osoby losowo dostawały kubek. Przy sprzedaży podawały cenę 2× wyższą niż osoby które chciały go kupić. Sam kontakt z przedmiotem tworzy poczucie własności.</p><div class="example-box"><strong>Wykorzystanie:</strong> jazda próbna samochodem, 30-dniowy trial, AR/VR przymierzanie przez telefon, możliwość personalizacji produktu.</div><div class="defense-box"><div class="def-label">Ochrona</div>Trial to narzędzie uzależnienia, nie prezent. Decyduj przed wypróbowaniem, nie po.</div></div></div>
+    </div>
+    <div class="quiz-section"><div class="section-label">Quiz — Marketing</div><div class="quiz-card"><div id="q1-text" class="quiz-q"></div><div class="quiz-opts" id="q1-opts"></div><div class="quiz-feedback" id="q1-fb"></div><button class="next-btn" id="q1-next" style="display:none" onclick="nextQ(1)">Następne pytanie →</button></div></div>
+    <div class="module-complete" id="mc-1"><div class="mc-icon"><i class="ti ti-check"></i></div><div id="mc1-score" class="score-badge"></div><div class="mc-title">Marketing rozkodowany</div><div class="mc-desc">Teraz każda cena .99, każdy timer i każda recenzja będzie wyglądać inaczej.</div><button class="next-module-btn" onclick="showModule(2)">Przejdź do modułu 2: Social media →</button></div>
+  </section>
+
+  <!-- MODULE 2 -->
+  <section class="module" id="mod-2" aria-label="Moduł 2: Social media">
+    <div class="mod-eyebrow">Moduł 2</div>
+    <h2 class="mod-title">Social media i influencerzy</h2>
+    <p class="mod-desc">Platformy zatrudniają najlepszych specjalistów od uzależnień. Dosłownie — byli pracownicy kasyn projektowali algorytmy Facebooka. To nie jest przypadek.</p>
+    <div class="section">
+      <div class="section-label">Architektura uzależnienia</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Zmienny harmonogram nagród</span><span class="tc-tag tag-danger">fundamentalna pętla</span></div><div class="tc-hook">Slot machines nie są przypadkowym wzorem dla social media.</div><div class="tc-body"><p>B.F. Skinner: zwierzęta najbardziej obsesyjnie wciskają dźwignię gdy nagroda przychodzi nieregularnie. Scrollowanie = wciskanie dźwigni. Może będzie coś ciekawego? Ten mechanizm odpowiada za średnio 2-3h dziennie spędzone na telefonie.</p><div class="example-box"><strong>Pull-to-refresh:</strong> gest odświeżania kanału jest dosłownie jak pociągnięcie jednoręki bandyta. Zaprojektowany celowo przez Loren Brichter, który publicznie tego żałuje.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Walidacja społeczna i lajki</span><span class="tc-tag tag-danger">pętla dopaminowa</span></div><div class="tc-hook">Powiadomienie o lajku aktywuje te same obszary mózgu co narkotyki.</div><div class="tc-body"><p>Badania fMRI: powiadomienie o aprobacie społecznej aktywuje jądro półleżące (centrum nagrody). Instagram przez 2 lata testował ukrycie liczby lajków — użytkownicy byli mniej zadowoleni nawet wiedząc, że to eksperyment.</p><div class="example-box"><strong>Strategia platform:</strong> celowe opóźnianie powiadomień (zbieranie ich w paczki) zwiększa efekt nagrody. Instagram to patentował.</div><div class="defense-box"><div class="def-label">Ochrona</div>Wyłącz powiadomienia o reakcjach. Sprawdzaj platformy w wyznaczonych godzinach — nie reaktywnie.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Algorytm polaryzacji</span><span class="tc-tag tag-danger">systemowa</span></div><div class="tc-hook">Algorytm nie pokazuje ci co lubisz — pokazuje co cię wciąga. To nie to samo.</div><div class="tc-body"><p>Wewnętrzne badanie YouTube (2019): algorytm systematycznie promował treści coraz bardziej ekstremalne, bo generowały więcej zaangażowania. To nie błąd — to optymalizacja czasu spędzonego na platformie.</p><div class="example-box"><strong>Facebook/Meta:</strong> wewnętrzny raport (2021) przyznawał że algorytm „zamiast łączyć, dzieli i rozzłoszcza" — bo złość = kliki = przychód z reklam.</div></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">Techniki influencerów</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Pararelacja (parasocial relationship)</span><span class="tc-tag tag-warn">emocjonalna</span></div><div class="tc-hook">Czujesz że znasz influencera. On/ona nie wie że istniejesz.</div><div class="tc-body"><p>Mózg nie odróżnia znajomości medialnej od prawdziwej relacji. Regularny kontakt z twarzą + głosem + „intymnymi" detalami życia = poczucie przyjaźni. Influencer może sprzedawać cokolwiek — i odczytasz to jako rekomendację przyjaciela.</p><div class="example-box"><strong>Kulminacja:</strong> „Odkryłam ten krem i musiałam się wami podzielić" — nawet gdy jest to płatna współpraca (często nieoznaczona lub oznaczona niewyraźnie).</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Autentyczność jako strategia</span><span class="tc-tag tag-warn">zaawansowana</span></div><div class="tc-hook">„Pokażę wam moją niedoskonałość" — to też może być technika.</div><div class="tc-body"><p>Strategiczne ujawnianie słabości buduje zaufanie silniej niż perfekcja (efekt pratfall). Influencerzy uczą się „kontrolowanej wrażliwości": wyznają wady które ich nie umniejszają, ale nigdy kluczowe.</p><div class="example-box"><strong>Test:</strong> czy ich „autentyczne" momenty jakoś zawsze zbiegają się z launchem produktowym? Czy „wzruszający post o walce" poprzedza sprzedaż kursu?</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">FOMO i lifestyle sprzedaż</span><span class="tc-tag tag-danger">wszechobecna</span></div><div class="tc-hook">Nie sprzedają produktu — sprzedają wersję siebie, którą możesz być jeśli kupisz.</div><div class="tc-body"><p>Badania: post z produktem w luksusowym otoczeniu sprzedaje 40-60% lepiej niż z tym samym produktem na białym tle. Kupujesz nie rzecz — kupujesz skojarzenie.</p><div class="defense-box"><div class="def-label">Ochrona</div>Przy każdym zakupie przez social media zapytaj: czy chcę TEN produkt, czy chcę TAMTO życie?</div></div></div>
+    </div>
+    <div class="quiz-section"><div class="section-label">Quiz — Social media</div><div class="quiz-card"><div id="q2-text" class="quiz-q"></div><div class="quiz-opts" id="q2-opts"></div><div class="quiz-feedback" id="q2-fb"></div><button class="next-btn" id="q2-next" style="display:none" onclick="nextQ(2)">Następne pytanie →</button></div></div>
+    <div class="module-complete" id="mc-2"><div class="mc-icon"><i class="ti ti-check"></i></div><div id="mc2-score" class="score-badge"></div><div class="mc-title">Algorytm rozkodowany</div><div class="mc-desc">Wiesz już jak działa slot machine w twoim telefonie.</div><button class="next-module-btn" onclick="showModule(3)">Przejdź do modułu 3: Polityka →</button></div>
+  </section>
+
+  <!-- MODULE 3 -->
+  <section class="module" id="mod-3" aria-label="Moduł 3: Polityka">
+    <div class="mod-eyebrow">Moduł 3</div>
+    <h2 class="mod-title">Polityka, propaganda i PR</h2>
+    <p class="mod-desc">Polityka to marketing — ale zakup dotyczy twojego głosu, uwagi i tożsamości. Techniki są te same, stawki wyższe.</p>
+    <div class="section">
+      <div class="section-label">Klasyczne techniki propagandy</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Tworzenie wroga (othering)</span><span class="tc-tag tag-danger">fundament</span></div><div class="tc-hook">Jedność grupy najłatwiej zbudować przez wspólnego wroga, nie wspólne wartości.</div><div class="tc-body"><p>Henri Tajfel (teoria tożsamości społecznej): samo podzielenie ludzi na grupy powoduje faworyzowanie swojej i deprecjonowanie obcej. Politycy używają tego mechanizmu: „oni" jako wyjaśnienie każdego problemu.</p><div class="example-box"><strong>Sygnał ostrzegawczy:</strong> gdy każde przemówienie polityczne ma łatwo identyfikowalnego wroga — to nie analiza, to manipulacja emocjonalna.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Powtarzanie jako prawda (efekt iluzorycznej prawdy)</span><span class="tc-tag tag-danger">systematyczna</span></div><div class="tc-hook">Fałszywe stwierdzenie powtórzone wystarczająco wiele razy staje się „znane" — a znane = prawdziwe.</div><div class="tc-body"><p>Badanie Hasher i Zacks (1977): uczestnicy oceniali stwierdzenia jako bardziej prawdziwe jeśli słyszeli je wcześniej — niezależnie od treści. Mózg używa łatwości przetwarzania jako heurystyki prawdziwości.</p><div class="defense-box"><div class="def-label">Ochrona</div>Znajomość != prawda. Gdy stwierdzenie wydaje ci się „jakoś prawdziwe" — sprawdź kiedy po raz pierwszy je usłyszałaś i skąd.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Framing (ramowanie)</span><span class="tc-tag tag-danger">lingwistyczna</span></div><div class="tc-hook">„Podatek od śmierci" vs „podatek spadkowy" — te same przepisy, zupełnie inne emocje.</div><div class="tc-body"><p>Kahneman i Tversky: ten sam fakt opisany jako „85% szans przeżycia" vs „15% śmiertelność" generuje różne decyzje medyczne. Dobór słów to dobór emocji i skojarzonych wartości.</p><div class="example-box"><strong>Klasyki:</strong> „pro-life" vs „pro-choice", „nielegalni imigranci" vs „nieupoważnieni migranci", „interwencja zbrojna" vs „inwazja". Każde z tych sformułowań to decyzja polityczna, nie neutralny opis.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Firehose of falsehood (zatopienie informacyjne)</span><span class="tc-tag tag-warn">nowoczesna</span></div><div class="tc-hook">Nie musisz przekonać — wystarczy zmęczyć i skonfundować.</div><div class="tc-body"><p>Rosyjska doktryna dezinformacji (opisana przez RAND Corporation): nie jedno wielkie kłamstwo — setki sprzecznych małych twierdzeń jednocześnie. Efekt: odbiorca nie wie w co wierzyć i rezygnuje z poszukiwania prawdy.</p><div class="example-box"><strong>Objaw:</strong> gdy czujesz że nie możesz się połapać, wszystko jest sprzeczne i nie warto sprawdzać — to może być cel, nie efekt uboczny.</div></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">PR i spin</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Spin doctoring — zarządzanie narracją</span><span class="tc-tag tag-warn">profesjonalna</span></div><div class="tc-hook">Nie zmień faktu — zmień kontekst, timing i emocjonalne ramy w jakich go podajesz.</div><div class="tc-body"><p>Klasyczne techniki spin doktora: wrzucanie złych wiadomości w piątek wieczór (news dump), ogłoszenie kryzysu jednocześnie z większą pozytywną wiadomością (dilution), przyznanie się do małego błędu żeby ukryć większy.</p><div class="example-box"><strong>Praktycznie:</strong> firma ujawnia skandal finansowy tego samego dnia co ogłasza fundację charytatywną. Algorytmy medialne pokazują oba z równą intensywnością — emocjonalnie „neutralizują" się nawzajem.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Astroturfing (sztuczna oddolność)</span><span class="tc-tag tag-warn">ukryta</span></div><div class="tc-hook">Ruch „zwykłych ludzi" który jest opłacony przez korporację lub partię polityczną.</div><div class="tc-body"><p>Nazwa od AstroTurf — sztuczna trawa. Agencje PR tworzą organizacje, konta w social media i „spontaniczne" komentarze które wyglądają jak oddolny ruch — ale są płatnymi kampaniami. Udokumentowane przypadki: przemysł tytoniowy, naftowy, partie polityczne.</p><div class="defense-box"><div class="def-label">Ochrona</div>Sprawdź datę założenia organizacji/konta, kto ją finansuje, czy profil ma historię przed danym tematem.</div></div></div>
+    </div>
+    <div class="quiz-section"><div class="section-label">Quiz — Polityka i PR</div><div class="quiz-card"><div id="q3-text" class="quiz-q"></div><div class="quiz-opts" id="q3-opts"></div><div class="quiz-feedback" id="q3-fb"></div><button class="next-btn" id="q3-next" style="display:none" onclick="nextQ(3)">Następne pytanie →</button></div></div>
+    <div class="module-complete" id="mc-3"><div class="mc-icon"><i class="ti ti-check"></i></div><div id="mc3-score" class="score-badge"></div><div class="mc-title">Spin rozkodowany</div><div class="mc-desc">Widzisz już jak framing zmienia wszystko bez zmieniania faktów.</div><button class="next-module-btn" onclick="showModule(4)">Przejdź do modułu 4: Relacje →</button></div>
+  </section>
+
+  <!-- MODULE 4 -->
+  <section class="module" id="mod-4" aria-label="Moduł 4: Relacje">
+    <div class="mod-eyebrow">Moduł 4</div>
+    <h2 class="mod-title">Relacje, sekty i toksyczne związki</h2>
+    <p class="mod-desc">Najtrudniejszy moduł — bo tu manipulacja miesza się z miłością, lojalnością i tożsamością. Rozpoznanie jest trudne kiedy jesteś w środku.</p>
+    <div class="section">
+      <div class="section-label">Techniki kontroli</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Love bombing (bomba miłości)</span><span class="tc-tag tag-danger">otwierający</span></div><div class="tc-hook">Przytłaczająca intensywność uczuć na początku — potem zmiana.</div><div class="tc-body"><p>Technika stosowana przez narcystycznych partnerów, sekty i MLM. Faza 1: idealizacja — wyjątkowe traktowanie, intensywna uwaga. Faza 2: dewaluacja — gdy uzależnienie jest pewne, zaczyna się kontrola.</p><div class="example-box"><strong>W sektach:</strong> nowy członek jest bombowany miłością przez całą grupę — poczucie wspólnoty, zrozumienia, sensu. Wyjście = utrata wszystkiego co dała sekta.</div><div class="defense-box"><div class="def-label">Sygnał ostrzegawczy</div>Intensywność uczuć nieadekwatna do długości znajomości. „Skąd ona/on wie dokładnie czego potrzebuję?" — to może być technika, nie magia.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Gaslighting</span><span class="tc-tag tag-danger">podważanie rzeczywistości</span></div><div class="tc-hook">„Nie powiedziałem tego." „Jesteś zbyt wrażliwa." „To było twoje wyobrażenie."</div><div class="tc-body"><p>Systematyczne podważanie cudzej percepcji rzeczywistości aż do momentu gdy ofiara przestaje ufać własnym osądom. Efekt: ofiara staje się zależna od manipulatora w ocenie rzeczywistości.</p><div class="example-box"><strong>Etapy:</strong> 1. Kwestionowanie faktów. 2. Podważanie emocji. 3. Atakowanie tożsamości. 4. Izolacja od zewnętrznych źródeł weryfikacji.</div><div class="defense-box"><div class="def-label">Ochrona</div>Prowadź zapiski. Zewnętrzny dziennik faktów jest odporny na gaslighting. Szukaj zewnętrznej perspektywy.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Intermittent reinforcement w relacjach</span><span class="tc-tag tag-danger">uzależniająca</span></div><div class="tc-hook">Zmienna nagroda tworzy silniejsze uzależnienie niż stała miłość.</div><div class="tc-body"><p>Partner toksyczny: raz ciepły, raz zimny — bez przewidywalnego wzoru. Mózg nie uzależnia się od nagrody — uzależnia się od nieprzewidywalności nagrody. Dlatego wychodzenie z toksycznych związków jest trudniejsze niż ze zdrowych.</p><div class="example-box"><strong>Cykl:</strong> napięcie → wybuch → skrucha/miodowy miesiąc → napięcie... Faza miodowego miesiąca jest wzmocnieniem które utrzymuje w cyklu.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">BITE model (sekty i organizacje kontrolujące)</span><span class="tc-tag tag-warn">systemowa</span></div><div class="tc-hook">Kontrola Zachowania, Informacji, Myśli, Emocji — cztery filary każdej sekty.</div><div class="tc-body"><p>Model Stevena Hassana: każda organizacja kontrolująca działa na czterech poziomach. B-Behavior: kontrola czasu, finansów. I-Information: blokada zewnętrznych źródeł. T-Thought: specjalny język. E-Emotion: strach przed odejściem.</p><div class="example-box"><strong>Nie tylko sekty:</strong> MLM, niektóre korporacje, ekstremalnie ideologiczne ruchy polityczne, niektóre związki romantyczne.</div><div class="defense-box"><div class="def-label">Test</div>Czy możesz swobodnie czytać krytykę swojej organizacji bez kary? Czy możesz odejść bez kosztów? Nie = sygnał.</div></div></div>
+    </div>
+    <div class="quiz-section"><div class="section-label">Quiz — Relacje i sekty</div><div class="quiz-card"><div id="q4-text" class="quiz-q"></div><div class="quiz-opts" id="q4-opts"></div><div class="quiz-feedback" id="q4-fb"></div><button class="next-btn" id="q4-next" style="display:none" onclick="nextQ(4)">Następne pytanie →</button></div></div>
+    <div class="module-complete" id="mc-4"><div class="mc-icon"><i class="ti ti-check"></i></div><div id="mc4-score" class="score-badge"></div><div class="mc-title">Mechanizmy relacji rozkodowane</div><div class="mc-desc">Najtrudniejszy moduł za tobą.</div><button class="next-module-btn" onclick="showModule(5)">Przejdź do modułu 5: Praca →</button></div>
+  </section>
+
+  <!-- MODULE 5 -->
+  <section class="module" id="mod-5" aria-label="Moduł 5: Praca">
+    <div class="mod-eyebrow">Moduł 5</div>
+    <h2 class="mod-title">Środowisko pracy i negocjacje</h2>
+    <p class="mod-desc">Biuro jest areną wpływu. Promocje, decyzje, budżety — wszystko rozgrywa się między ludźmi używającymi (świadomie lub nie) technik z poprzednich modułów.</p>
+    <div class="section">
+      <div class="section-label">Techniki negocjacyjne</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Stopa w drzwiach (Foot-in-the-door)</span><span class="tc-tag tag-warn">klasyczna</span></div><div class="tc-hook">Małe tak prowadzi do dużego tak — bo chcemy być spójni z tym co już powiedzieliśmy.</div><div class="tc-body"><p>Freedman i Fraser (1966): osoby które zgodziły się na małą prośbę były 76% bardziej skłonne zgodzić się na dużą. W pracy: „Czy mógłabyś rzucić okiem?" → „Czy mógłabyś to poprawić?" → „Czy mógłabyś to przejąć?"</p><div class="defense-box"><div class="def-label">Ochrona</div>Każdą prośbę oceniaj osobno. „Tak dla małego" nie tworzy zobowiązania dla dużego.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Drzwi w twarz (Door-in-the-face)</span><span class="tc-tag tag-warn">odwrotna</span></div><div class="tc-hook">Najpierw wielka absurdalna prośba — potem małe „kompromisowe" żądanie.</div><div class="tc-body"><p>Cialdini: badacze prosili o 2h wolontariatu tygodniowo przez 2 lata → odmowa → „To może 2h na tę jedną sobotę?" = 50% zgodziło się. Bez wielkiej prośby — tylko 17%.</p><div class="example-box"><strong>W negocjacjach wynagrodzenia:</strong> firma oferuje 5000. Twój kontr: 8000. Negocjują do 6500 — wszyscy czują że osiągnęli kompromis.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Tactical empathy (empatia taktyczna)</span><span class="tc-tag tag-info">zaawansowana</span></div><div class="tc-hook">Chris Voss (były negocjator FBI): odzwierciedlanie i nazywanie emocji rozbrajają defensywność.</div><div class="tc-body"><p>Mirroring (powtórzenie ostatnich 2-3 słów ze znakiem zapytania) i labeling (nazywanie emocji: „Wydaje mi się że jesteś sfrustrowana..."). Efekt: rozmówca czuje się rozumiany i obniża obronę.</p><div class="example-box"><strong>Mirroring w praktyce:</strong> Szef: „Nie możemy teraz podwyższyć budżetu." Ty: „Nie możecie teraz podwyższyć budżetu...?" (cisza). Szef zaczyna tłumaczyć — ujawniając swoje prawdziwe priorytety.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Toksyczny szef — manipulacja przez hierarchię</span><span class="tc-tag tag-danger">organizacyjna</span></div><div class="tc-hook">Szef który chwali i upokarza naprzemiennie — to nie styl zarządzania, to technika kontroli.</div><div class="tc-body"><p>Wzorzec: publiczna pochwała → poczucie wyjątkowości → lojalność. Potem: publiczne zawstydzenie → strach → uległość. To intermittent reinforcement przeniesione do biura.</p><div class="example-box"><strong>Sygnał:</strong> „Cieszę się że przynajmniej TY rozumiesz jak tu działamy" (triangulacja) → dzielenie zespołu na „swoich" i „obcych".</div><div class="defense-box"><div class="def-label">Ochrona</div>Oceniaj pracodawcę po zachowaniach systemowych, nie po wyjątkowych momentach ciepła.</div></div></div>
+    </div>
+    <div class="quiz-section"><div class="section-label">Quiz — Praca i negocjacje</div><div class="quiz-card"><div id="q5-text" class="quiz-q"></div><div class="quiz-opts" id="q5-opts"></div><div class="quiz-feedback" id="q5-fb"></div><button class="next-btn" id="q5-next" style="display:none" onclick="nextQ(5)">Następne pytanie →</button></div></div>
+    <div class="module-complete" id="mc-5"><div class="mc-icon"><i class="ti ti-check"></i></div><div id="mc5-score" class="score-badge"></div><div class="mc-title">Negocjacje rozkodowane</div><div class="mc-desc">Widzisz już wzorce w biurze których wcześniej nie dostrzegałaś.</div><button class="next-module-btn" onclick="showModule(6)">Przejdź do modułu 6: Zaawansowane →</button></div>
+  </section>
+
+  <!-- MODULE 6 -->
+  <section class="module" id="mod-6" aria-label="Moduł 6: Zaawansowane techniki">
+    <div class="mod-eyebrow">Moduł 6</div>
+    <h2 class="mod-title">Zaawansowane techniki</h2>
+    <p class="mod-desc">Dark patterns, NLP, sunk cost, microtargeting, triangulacja — narzędzia które działają na poziomie języka, architektury wyboru i tożsamości. Trudniejsze do zauważenia, bo nie atakują emocji bezpośrednio.</p>
+    <div class="callout"><div class="callout-label">Perspektywa tego modułu</div><div class="callout-text">Wszystkie poniższe techniki opisuję od strony mechanizmu i rozpoznania — nie stosowania. Znać narzędzie to nie to samo co go używać. Rozpoznanie to pierwszy krok do wolności od niego.</div></div>
+    <div class="section">
+      <div class="section-label">Dark patterns — ciemna architektura wyboru</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Roach motel (łatwo wejść, trudno wyjść)</span><span class="tc-tag tag-danger">powszechna</span></div><div class="tc-hook">Subskrypcja w 2 kliknięcia. Rezygnacja: formularz + telefon + 3 tygodnie.</div><div class="tc-body"><p>Asymetria wysiłku zaprojektowana celowo. Mózg stosuje zasadę minimalnego wysiłku — jeśli wyjście kosztuje dużo energii, domyślnie zostajemy. Model biznesowy oparty na inercji, nie na wartości.</p><div class="example-box"><strong>Amazon Prime:</strong> przez lata anulowanie wymagało przejścia przez 6 ekranów z pułapkami. Po interwencji FTC (2023) uprościli — bo regulator uznał to za ciemny wzorzec.</div><div class="defense-box"><div class="def-label">Ochrona</div>Przed subskrypcją sprawdź jak się z niej wychodzi. Jeśli nie możesz tego znaleźć w 30 sekund — to celowe.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Confirmshaming (zawstydzanie odmowy)</span><span class="tc-tag tag-warn">lingwistyczna</span></div><div class="tc-hook">„Tak, chcę oszczędzać" vs „Nie, wolę przepłacać" — to nie są neutralne opcje.</div><div class="tc-body"><p>Formulacja opcji rezygnacji tak, żeby odmowa implikowała głupotę lub złe wartości. Mózg unika tożsamościowych strat nawet w małych decyzjach.</p><div class="example-box"><strong>Przykłady:</strong> „Nie, nie chcę być zdrowsza", „Nie, rezygnuję z darmowej dostawy", „Nie, mój biznes nie musi rosnąć". Każde z tych „nie" to atak na tożsamość.</div><div class="defense-box"><div class="def-label">Ochrona</div>Przeczytaj opcję rezygnacji dosłownie. Jeśli zawiera ocenę twojego charakteru — to manipulacja.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Hidden costs i misdirection</span><span class="tc-tag tag-danger">ukryta</span></div><div class="tc-hook">Cena 49 zł → koszyk → dostawa 18 zł → opłata serwisowa 7 zł → razem 79 zł.</div><div class="tc-body"><p>Efekt zakotwiczenia + sunk cost w jednym. Na etapie koszyka jesteś już emocjonalnie zaangażowana. Projektanci UX wiedzą że konwersja spada przy każdym kroku — więc ukrywają koszty jak najpóźniej.</p><div class="example-box"><strong>Ticketmaster, Ryanair:</strong> branże z dokumentowanymi ciemnymi wzorcami kosztów ujawnianych na ostatnim ekranie. Ryanair był wielokrotnie karany przez europejskie organy ochrony konsumentów.</div><div class="defense-box"><div class="def-label">Ochrona</div>Zawsze sprawdzaj całkowity koszt przed podaniem danych płatności.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Preselected options (domyślne zgody)</span><span class="tc-tag tag-warn">pasywna</span></div><div class="tc-hook">Zaznaczone checkboxy, które musisz aktywnie odznaczyć — liczą na twoją nieuwagę.</div><div class="tc-body"><p>Status quo bias: domyślna opcja jest wybierana nieproporcjonalnie często — nie dlatego że jest najlepsza, ale dlatego że zmiana wymaga wysiłku.</p><div class="example-box"><strong>Efekt w skali:</strong> kraje z opt-out (domyślnie zgoda na donację organów) mają 90%+ dawców. Kraje opt-in — 15-20%. Ta sama decyzja, inny domyślny — dramatycznie różny wynik.</div><div class="defense-box"><div class="def-label">Ochrona</div>Przy każdym formularzu rejestracyjnym: przewiń do końca i odznacz wszystko co nie jest ci potrzebne.</div></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">NLP — Neuro-Linguistic Programming</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Czym jest NLP i jaki ma status naukowy</span><span class="tc-tag tag-info">kontekst</span></div><div class="tc-hook">NLP to zbiór technik komunikacji — ale jego podstawy teoretyczne nie mają potwierdzenia naukowego.</div><div class="tc-body"><p>NLP powstało w latach 70. (Bandler, Grinder). Twierdzenia NLP o strukturze mózgu są pseudonaukowe. Natomiast niektóre techniki komunikacyjne działają — nie z powodów które NLP podaje, ale dlatego że trafnie opisują znane mechanizmy psychologiczne.</p><div class="example-box"><strong>W praktyce:</strong> szkolenia sprzedażowe często uczą technik NLP bez mówienia że to NLP — bo sam termin jest skompromitowany w środowiskach naukowych.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Rapport i odzwierciedlanie (mirroring)</span><span class="tc-tag tag-warn">relacyjna</span></div><div class="tc-hook">Nieświadome kopiowanie postawy, tempa mowy i słownictwa buduje poczucie „podobieństwa" — a podobieństwo = zaufanie.</div><div class="tc-body"><p>Lubimy ludzi podobnych do siebie (efekt podobieństwa, Byrne). Odzwierciedlanie tempa mowy, gestów i słów kluczowych aktywuje ten efekt świadomie. Problem: budujesz zaufanie do kogoś kto je symuluje, nie czuje.</p><div class="defense-box"><div class="def-label">Ochrona</div>Rozdziel: „czuję się dobrze w tej rozmowie" od „ta osoba jest godna zaufania".</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Wbudowane komendy i presupozycje</span><span class="tc-tag tag-danger">językowa</span></div><div class="tc-hook">„Kiedy zdecydujesz się kupić, który kolor wolisz?" zakłada że kupno jest faktem — pyta tylko o detal.</div><div class="tc-body"><p>Presupozycja to założenie wbudowane w pytanie, które odbiorca musi przyjąć żeby je przetworzyć. Mózg odpowiada na pytanie — nie weryfikuje założenia.</p><div class="example-box"><strong>Polityczne:</strong> „Kiedy skończycie niszczyć kraj?" zakłada niszczenie. Sprzedażowe: „Czy woli pani zapłacić kartą czy gotówką?" zakłada zakup.</div><div class="defense-box"><div class="def-label">Ochrona</div>Gdy ktoś pyta o szczegóły decyzji której jeszcze nie podjęłaś — cofnij się. „Czy w ogóle chcę to zrobić?"</div></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">Sunk cost — pułapka poniesionych kosztów</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Efekt utopionych kosztów</span><span class="tc-tag tag-danger">decyzyjna</span></div><div class="tc-hook">„Już tyle w to włożyłam — nie mogę teraz rezygnować." Ale minione koszty nie są dowodem że przyszłość będzie dobra.</div><div class="tc-body"><p>Racjonalnie: decyzja powinna zależeć od przyszłych kosztów i korzyści — nie przeszłych. Manipulatorzy aktywnie zwiększają sunk cost zanim poproszą o kluczową zgodę.</p><div class="defense-box"><div class="def-label">Ćwiczenie decyzyjne</div>Zapytaj siebie: „Gdybym zaczynała od zera dziś — czy wybrałabym to samo?" Jeśli nie — sunk cost trzyma cię, nie wartość.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Eskalacja zaangażowania</span><span class="tc-tag tag-warn">sekwencyjna</span></div><div class="tc-hook">Każdy kolejny krok zwiększa koszt wyjścia — aż wyjście staje się „niemożliwe".</div><div class="tc-body"><p>Sekwencja celowo budująca sunk cost: małe zaangażowanie → średnie → duże → ogromne. Na każdym etapie wyjście jest „nieracjonalne" bo tyle już włożono.</p><div class="example-box"><strong>W MLM:</strong> starter kit → szkolenie → zakup produktów → konferencja. Na każdym etapie wyjście oznacza „utratę" tego co włożono. Prawdziwy cel jest osiągnięty — bez względu na to czy zarobisz.</div></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">Microtargeting i Cambridge Analytica</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Psychograficzny profil wyborcy/konsumenta</span><span class="tc-tag tag-danger">systemowa</span></div><div class="tc-hook">Nie musisz przekonać wszystkich. Wystarczy znaleźć niezdecydowanych i trafić w ich konkretny lęk.</div><div class="tc-body"><p>Cambridge Analytica (skandal 2018) zebrała dane psychograficzne 87 milionów użytkowników Facebooka bez zgody. Budowała profile OCEAN i dopasowywała przekaz polityczny do konkretnego profilu psychologicznego.</p><div class="example-box"><strong>Przykład:</strong> osoba z wysokim neurotycznym profilem dostawała reklamy o zagrożeniach. Ta sama partia osobie z wysoką otwartością pokazywała przekaz o możliwościach. Ten sam kandydat — zupełnie inne emocjonalne haki.</div><div class="defense-box"><div class="def-label">Ważny kontekst</div>Skuteczność Cambridge Analytica jest kwestionowana naukowo. Ale mechanizm targetowania psychograficznego jest realny i stosowany przez wszystkie duże platformy reklamowe.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Bańki informacyjne i echo chambers</span><span class="tc-tag tag-warn">środowiskowa</span></div><div class="tc-hook">Algorytm nie cenzuruje — personalizuje. Efekt jest ten sam: widzisz coraz węższy wycinek rzeczywistości przekonana, że widzisz całość.</div><div class="tc-body"><p>Filter bubble (Eli Pariser, 2011): algorytmy ukrywają treści nie pasujące do twoich preferencji. Twoja „rzeczywistość" medialna staje się coraz bardziej jednorodna.</p><div class="defense-box"><div class="def-label">Ćwiczenie</div>Raz w tygodniu przeczytaj jedno źródło z innego „bąbla" — nie żeby zmienić zdanie, ale żeby zobaczyć jak wygląda rzeczywistość dla kogoś o innym profilu.</div></div></div>
+    </div>
+    <div class="section">
+      <div class="section-label">Triangulacja w relacjach narcystycznych</div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Triangulacja — kontrola przez trzecią osobę</span><span class="tc-tag tag-danger">relacyjna</span></div><div class="tc-hook">„Moja była zawsze to rozumiała." „Wszyscy mówią że przesadzasz."</div><div class="tc-body"><p>Wprowadzenie trzeciej osoby do dynamiki relacji — w celu wywołania zazdrości, niepewności lub legitymizacji własnej pozycji. Trzy funkcje: walidacja własnej pozycji, wywoływanie rywalizacji, gaslighting przez proxy.</p><div class="example-box"><strong>W pracy:</strong> szef który mówi „Inni w zespole nie mają z tym problemu" — może stosować triangulację żeby uniknąć odpowiedzi na twoją słuszną uwagę.</div><div class="defense-box"><div class="def-label">Ochrona</div>Gdy ktoś powołuje się na anonimowych „innych" — poproś o konkretne imiona i cytaty. Triangulacja nie znosi konkretu.</div></div></div>
+      <div class="technique-card" onclick="toggleCard(this)"><div class="tc-header"><span class="tc-name">Flying monkeys (latające małpy)</span><span class="tc-tag tag-warn">grupowa</span></div><div class="tc-hook">Manipulator nie atakuje sam — wysyła innych żeby „porozmawiali" z ofiarą w jego imieniu.</div><div class="tc-body"><p>Osoby używane nieświadomie przez manipulatora do przekazywania jego przekazu lub wywierania presji. Flying monkeys często nie wiedzą że są wykorzystywani — wierzą że działają z troski.</p><div class="example-box"><strong>Wzorzec po rozstaniu:</strong> manipulator informuje rodzinę/znajomych swojej wersji zdarzeń. Ci próbują „pogodzić" — ale w praktyce przenoszą jego przekaz. Ofiara ma do czynienia z całym systemem, nie jedną osobą.</div><div class="defense-box"><div class="def-label">Ochrona</div>Informacje przekazywane przez pośredników traktuj jako jednostronne. Zawsze wróć do źródła bezpośrednio.</div></div></div>
+    </div>
+    <div class="quiz-section"><div class="section-label">Quiz — Moduł 6</div><div class="quiz-card"><div id="q6-text" class="quiz-q"></div><div class="quiz-opts" id="q6-opts"></div><div class="quiz-feedback" id="q6-fb"></div><button class="next-btn" id="q6-next" style="display:none" onclick="nextQ(6)">Następne pytanie →</button></div></div>
+    <div class="module-complete" id="mc-6"><div class="mc-icon"><i class="ti ti-trophy"></i></div><div id="mc6-score" class="score-badge"></div><div class="mc-title">Akademia Manipulacji — ukończona</div><div class="mc-desc">7 modułów, ponad 50 technik. Teraz kiedy widzisz mechanizm — możesz wybrać jak reagujesz. To jest właśnie wolność której ta wiedza ma służyć.</div></div>
+  </section>
+
+</div><!-- /container -->
+
+<script>
+const quizData = [
+  [
+    { q: "Kahneman opisuje dwa systemy myślenia. Który jest głównym celem manipulacji?", opts: ["System 2 — analityczny, bo jest podatny na logiczne błędy", "System 1 — automatyczny i emocjonalny, bo reaguje zanim włączy się refleksja", "Obydwa jednakowo", "Żaden — manipulacja działa poza obydwoma systemami"], correct: 1, fb: "System 1 reaguje w 200ms, zanim System 2 zdąży cokolwiek sprawdzić. To jego automatyczność czyni go idealnym celem." },
+    { q: "Awersja do straty oznacza, że:", opts: ["Ludzie unikają ryzykownych decyzji finansowych", "Strata tej samej kwoty boli psychologicznie około 2× bardziej niż cieszy zysk", "Ludzie nie lubią przegrywać w grach", "Strach przed utratą zdrowia jest silniejszy niż inne lęki"], correct: 1, fb: "To fundament FOMO, limitowanych ofert i komunikatów 'zostały 3 sztuki'. Mózg reaguje na możliwą stratę silniej niż na równoważny zysk." },
+    { q: "Efekt zakotwiczenia polega na tym, że:", opts: ["Pierwsze wrażenie dotyczące osoby jest trudne do zmiany", "Pierwsza liczba staje się punktem odniesienia dla wszystkich kolejnych ocen", "Ceny okrągłe brzmią drożej niż .99", "Ludzie lepiej pamiętają początki i końce list"], correct: 1, fb: "Dlatego 'przekreślona cena' jest tak skuteczna — zakotwicza mózg na wyższej liczbie, przez co niższa wydaje się okazją." }
+  ],
+  [
+    { q: "Booking.com wyświetla '15 osób ogląda ten hotel'. To przykład:", opts: ["Dowodu społecznego + sztucznego niedoboru jednocześnie", "Efektu autorytetu", "Zakotwiczenia cenowego", "Efektu posiadania"], correct: 0, fb: "Oba mechanizmy naraz: 'inni też chcą' (dowód społeczny) + presja że zaraz zniknie (sztuczna pilność). Podwójny atak na System 1." },
+    { q: "Efekt posiadania wyjaśnia dlaczego trial i jazda próbna tak skutecznie konwertują na zakup:", opts: ["Bo klient ma czas lepiej poznać produkt", "Sam kontakt z produktem tworzy poczucie własności — rezygnacja boli jak strata", "Bo produkt okazuje się lepszy niż w opisie", "Bo firma daje rabat po trialu"], correct: 1, fb: "Po 30 dniach trialu mózg już 'ma' ten produkt. Rezygnacja jest stratą — a strat unikamy silniej niż szukamy zysków." },
+    { q: "Dlaczego prestiżowe marki używają okrągłych cen zamiast .99?", opts: ["Klienci premium mają lepszą matematykę", "Okrągła cena sygnalizuje pewność siebie — brak potrzeby triku cenowego", "To regulacja prawna w segmencie luksusowym", "Efekt .99 działa tylko poniżej 100 zł"], correct: 1, fb: "Cena .99 to sygnał 'promocji/negocjacji'. Okrągła mówi: 'wiem ile jestem wart'. To też perswazja — tylko w drugą stronę." }
+  ],
+  [
+    { q: "Zmienny harmonogram nagród w social media oznacza:", opts: ["Że platformy płacą twórcom nieregularnie", "Że nagroda (ciekawy post) przychodzi nieprzewidywalnie — jak slot machine — tworząc obsesję", "Że raz na jakiś czas dostajesz powiadomienie o urodzinach znajomego", "Że treści reklamowe pojawiają się losowo"], correct: 1, fb: "Nie 'każde scroll daje nagrodę' — bo to byłoby przewidywalne. Nagroda przychodzi MOŻE, CZASEM — i to tworzy obsesję." },
+    { q: "Pararelacja (parasocial relationship) z influencerem polega na tym, że:", opts: ["Influencer celowo buduje fałszywe przyjaźnie z fanami", "Mózg tworzy poczucie relacji z osobą medialną mimo braku wzajemności", "Fani projektują własne pragnienia na influencera", "Influencer udaje że zna swoich obserwujących osobiście"], correct: 1, fb: "Mózg nie odróżnia 'znajomości medialnej' od prawdziwej relacji. Rekomendacja influencera jest odbierana jak rada przyjaciela." },
+    { q: "Algorytm YouTube był krytykowany za:", opts: ["Promowanie tylko dużych twórców", "Systematyczne prowadzenie ku coraz bardziej ekstremalnym treściom bo generują więcej zaangażowania", "Blokowanie treści politycznych", "Preferowanie treści po angielsku"], correct: 1, fb: "Algorytm optymalizuje czas oglądania — a treści ekstremalne angażują mocniej. To nie błąd, to konsekwencja funkcji celu platformy." }
+  ],
+  [
+    { q: "Efekt iluzorycznej prawdy wyjaśnia dlaczego:", opts: ["Kłamstwo wypowiedziane pewnym głosem brzmi wiarygodnie", "Powtarzanie twierdzenia sprawia że jest oceniane jako bardziej prawdziwe — niezależnie od treści", "Prostsze wyjaśnienia są lepiej zapamiętywane", "Osoby w autorytetach są wiarygodniejsze bez względu na treść"], correct: 1, fb: "Mózg używa łatwości przetwarzania jako heurystyki prawdziwości. To fundament każdej propagandy." },
+    { q: "Framing polityczny oznacza, że:", opts: ["Politycy kłamią dobierając selektywne fakty", "Dobór słów i kontekstu zmienia emocjonalną ocenę tego samego faktu", "Media zniekształcają wypowiedzi polityków", "Wyborcy oceniają polityków tylko przez media"], correct: 1, fb: "'Podatek od śmierci' vs 'podatek spadkowy' — te same przepisy, zupełnie różne emocje. Framing jest niewidoczny — przyjmujesz ramy bez świadomości że to wybór." },
+    { q: "Astroturfing to:", opts: ["Płacenie dziennikarzom za pozytywne artykuły", "Tworzenie pozornie oddolnych ruchów obywatelskich finansowanych przez korporacje lub partie", "Kupowanie reklam pod fałszywymi tożsamościami", "Systematyczne promowanie pozytywnych informacji o marce"], correct: 1, fb: "Nazwa od sztucznej trawy — wygląda jak naturalny ruch, a jest całkowicie sztuczny. Udokumentowane przypadki: przemysł tytoniowy, naftowy, partie polityczne." }
+  ],
+  [
+    { q: "Love bombing to technika która:", opts: ["Polega na wysyłaniu wielu wiadomości romantycznych na początku", "Tworzy uzależnienie emocjonalne przez przytłaczające pozytywne traktowanie w fazie otwarcia — a potem zmianę", "Jest metodą terapeutyczną opartą na pozytywnym wzmocnieniu", "Opisuje normalne zachowanie zakochanych osób"], correct: 1, fb: "Kluczowa jest kolejność: intensywna idealizacja → uzależnienie → kontrola/dewaluacja. Cel: stworzyć przywiązanie tak silne że wyjście staje się psychologicznie niemożliwe." },
+    { q: "Gaslighting doprowadza do tego, że ofiara:", opts: ["Zaczyna kłamać sama sobie o stanie relacji", "Przestaje ufać własnej percepcji i staje się zależna od manipulatora w ocenie rzeczywistości", "Doświadcza amnezji traumatycznej", "Zaczyna zachowywać się manipulacyjnie w odpowiedzi"], correct: 1, fb: "To jest właśnie cel gazlightingu: zniszczyć niezależny aparat poznawczy ofiary. Gdy nie możesz ufać własnym wspomnieniom — potrzebujesz kogoś kto 'powie ci jak jest'." },
+    { q: "Intermittent reinforcement w relacji toksycznej wyjaśnia dlaczego:", opts: ["Osoby wychodzą po pierwszym złym epizodzie", "Wychodzenie z toksycznych związków jest często trudniejsze niż ze zdrowych", "Terapia jest nieskuteczna w takich przypadkach", "Ofiary wracają ze strachu, nie z uczucia"], correct: 1, fb: "Mózg uzależnia się silniej od nieprzewidywalnych nagród niż od stałych. Zmienny cykl ciepło/zimno tworzy silniejsze przywiązanie niż konsekwentna miłość." }
+  ],
+  [
+    { q: "Technika 'drzwi w twarz' polega na:", opts: ["Celowym rozzłoszczeniu rozmówcy przed złożeniem oferty", "Najpierw bardzo dużej prośbie którą odrzucają — po czym realna prośba brzmi jak kompromis", "Fizycznym wejściu bez zaproszenia jako gest pewności siebie", "Stawianiu ultimatum w negocjacjach"], correct: 1, fb: "Kontrast i wzajemność w jednym. Ustąpiłaś z dużej prośby — oni czują się zobowiązani ustąpić z odmowy." },
+    { q: "Tactical empathy Chrisa Vossa polega na:", opts: ["Udawaniu empatii żeby uśpić czujność", "Używaniu nazywania emocji i odzwierciedlania żeby rozmówca czuł się rozumiany i obniżył defensywność", "Manipulowaniu emocjonalnymi potrzebami drugiej strony", "Budowaniu relacji osobistej przed negocjacjami"], correct: 1, fb: "Mirroring i labeling uruchamiają potrzebę bycia rozumianym i rozbrajają opór. Voss nie ukrywa że to świadoma technika." },
+    { q: "Toksyczny szef który chwali i upokarza naprzemiennie stosuje:", opts: ["Naturalny styl zarządzania oparty na informacji zwrotnej", "Wariant intermittent reinforcement — uzależnienie przez nieprzewidywalną aprobatę", "Technikę zarządzania przez strach z wojska", "Metodę Socratesa opartą na wyzwaniach"], correct: 1, fb: "Ten sam mechanizm co slot machine i toksyczny związek — tylko w środowisku pracy. Pracownicy rywalizują o aprobatę zamiast o wyniki." }
+  ],
+  [
+    { q: "Confirmshaming polega na tym, że:", opts: ["Formularz rezygnacji jest celowo ukryty głęboko w ustawieniach", "Opcja odmowy jest sformułowana tak, że jej wybranie atakuje tożsamość lub inteligencję odbiorcy", "Platforma wysyła e-mail z pytaniem czy na pewno chcesz zrezygnować", "Cena rezygnacji jest wyższa niż wartość subskrypcji"], correct: 1, fb: "'Nie, wolę przepłacać' — to nie neutralna opcja, to ocena moralna. Mózg unika tożsamościowych strat nawet w małych decyzjach." },
+    { q: "Efekt utopionych kosztów (sunk cost) sprawia, że:", opts: ["Ludzie nie chcą zaczynać nowych projektów bo boją się straty", "Przeszłe inwestycje irracjonalnie wpływają na przyszłe decyzje — trzymamy się złych wyborów bo 'już tyle włożyłyśmy'", "Firmy ukrywają rzeczywiste koszty produktów", "Konsumenci nadmiernie cenią produkty które dostali za darmo"], correct: 1, fb: "Racjonalnie: decyzja powinna zależeć od przyszłości. Psychologicznie: mózg nie może pogodzić się ze stratą. Manipulatorzy aktywnie zwiększają sunk cost przed kluczową prośbą." },
+    { q: "Presupozycja w NLP to:", opts: ["Ukryte założenie wbudowane w pytanie, które odbiorca musi przyjąć żeby je przetworzyć", "Technika budowania relacji przez kopiowanie gestów", "Metoda kotwiczenia pozytywnych emocji do decyzji zakupowych", "Programowanie podświadomości przez afirmacje"], correct: 0, fb: "'Kiedy zdecydujesz się kupić, który kolor wolisz?' — zakup jest założony, pytanie dotyczy tylko szczegółu. Mózg przetwarza pytanie, nie weryfikuje założenia." },
+    { q: "Triangulacja w relacji narcystycznej służy między innymi do:", opts: ["Budowania koalicji przyjaciół wokół manipulatora", "Legitymizacji własnej pozycji przez powoływanie się na (anonimowych) innych oraz wywoływania niepewności u ofiary", "Rozwiązywania konfliktów przez neutralnego mediatora", "Tworzenia sieci wsparcia po rozstaniu"], correct: 1, fb: "Triangulacja ma trzy funkcje: waliduje pozycję manipulatora, destabilizuje ofiarę przez zazdrość, umożliwia gaslighting przez proxy. Kluczowy sygnał: anonimowi 'wszyscy'." }
+  ]
+];
+
+const state = {
+  current: Array(7).fill(0),
+  scores: Array(7).fill(0),
+  answered: Array(7).fill(false),
+  completed: Array(7).fill(false)
+};
+
+function toggleCard(card) {
+  const body = card.querySelector('.tc-body');
+  const wasExpanded = card.classList.contains('expanded');
+  card.closest('.section').querySelectorAll('.technique-card').forEach(c => {
+    c.classList.remove('expanded');
+    c.querySelector('.tc-body').classList.remove('visible');
+  });
+  if (!wasExpanded) {
+    card.classList.add('expanded');
+    body.classList.add('visible');
+  }
+}
+
+function showModule(idx) {
+  document.querySelectorAll('.module').forEach(m => m.classList.remove('visible'));
+  document.getElementById('mod-' + idx).classList.add('visible');
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+  if (!state.completed[idx]) loadQuestion(idx);
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function loadQuestion(modIdx) {
+  const qIdx = state.current[modIdx];
+  const questions = quizData[modIdx];
+  if (qIdx >= questions.length) { showComplete(modIdx); return; }
+  const q = questions[qIdx];
+  document.getElementById('q' + modIdx + '-text').textContent = q.q;
+  const optsEl = document.getElementById('q' + modIdx + '-opts');
+  optsEl.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt;
+    btn.onclick = () => answerQuestion(modIdx, i);
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('q' + modIdx + '-fb').classList.remove('visible');
+  document.getElementById('q' + modIdx + '-next').style.display = 'none';
+  state.answered[modIdx] = false;
+}
+
+function answerQuestion(modIdx, chosen) {
+  if (state.answered[modIdx]) return;
+  state.answered[modIdx] = true;
+  const q = quizData[modIdx][state.current[modIdx]];
+  const opts = document.getElementById('q' + modIdx + '-opts').querySelectorAll('.quiz-opt');
+  opts.forEach(b => b.disabled = true);
+  opts[chosen].classList.add(chosen === q.correct ? 'correct' : 'wrong');
+  if (chosen !== q.correct) opts[q.correct].classList.add('correct');
+  if (chosen === q.correct) state.scores[modIdx]++;
+  const fb = document.getElementById('q' + modIdx + '-fb');
+  fb.textContent = (chosen === q.correct ? '✓ Dobrze. ' : '✗ Nie tym razem. ') + q.fb;
+  fb.classList.add('visible');
+  const isLast = state.current[modIdx] >= quizData[modIdx].length - 1;
+  const nb = document.getElementById('q' + modIdx + '-next');
+  nb.textContent = isLast ? 'Sprawdź wynik →' : 'Następne pytanie →';
+  nb.style.display = 'inline-block';
+}
+
+function nextQ(modIdx) {
+  state.current[modIdx]++;
+  state.answered[modIdx] = false;
+  if (state.current[modIdx] >= quizData[modIdx].length) showComplete(modIdx);
+  else loadQuestion(modIdx);
+}
+
+function showComplete(modIdx) {
+  const quizEl = document.querySelector('#mod-' + modIdx + ' .quiz-section');
+  if (quizEl) quizEl.style.display = 'none';
+  const mc = document.getElementById('mc-' + modIdx);
+  mc.classList.add('visible');
+  const total = quizData[modIdx].length;
+  document.getElementById('mc' + modIdx + '-score').textContent = state.scores[modIdx] + '/' + total + ' poprawnych';
+  state.completed[modIdx] = true;
+  document.querySelectorAll('.tab')[modIdx].classList.add('done');
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = state.completed.filter(Boolean).length;
+  document.getElementById('main-progress').style.width = Math.round((done / 7) * 100) + '%';
+  document.getElementById('progress-label').textContent = 'Postęp: ' + done + ' / 7 modułów';
+}
+
+// init all quizzes
+for (let i = 0; i < 7; i++) loadQuestion(i);
+</script>
+</body>
+</html>
